@@ -1,0 +1,6 @@
+[
+  {
+    "caption": "Toggle LiveHTML",
+    "command": "toggle_live_html"
+  }
+]

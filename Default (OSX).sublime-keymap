@@ -1,0 +1,13 @@
+[
+    {
+      "keys": ["super+alt+shift+l"],
+      "command": "toggle_live_html",
+      "context": [
+        { "key": "selector",
+          "operator": "equal",
+          "operand": "text.html.basic",
+          "match_all": true
+        }
+      ]
+    }
+]
