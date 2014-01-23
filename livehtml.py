@@ -4,7 +4,7 @@ import urllib
 # Holds currently loaded views where live HTML is enabled
 enabled_views = []
 port = 55555
-host = 'localhost'
+host = '127.0.0.1'
 
 def content(view):
   "Returns content of given view"
@@ -23,19 +23,26 @@ def toggle_indicator(view, state):
 def send_updated_html(view):
   global port, host
   try:
-    details = urllib.parse.urlencode({'file': view.file_name(), 'content': content(view)})
+    details = urllib.parse.urlencode({
+      'file': view.file_name(),
+      'content': content(view)
+    })
     details = details.encode('UTF-8')
     url = urllib.request.Request('http://' + host + ':' + str(port) + '/changed', details)
-    result =  urllib.request.urlopen(url).read().decode("utf8", 'ignore')
+    stream = urllib.request.urlopen(url)
+    stream.read()
+    stream.close()
     toggle_indicator(view, True)
-    return result
+    return True
   except:
     return False
 
 def check_live_html_server():
   global port, host
   url = urllib.request.Request('http://' + host + ':' + str(port) + '/status')
-  urllib.request.urlopen(url).read()
+  stream = urllib.request.urlopen(url)
+  stream.read()
+  stream.close()
 
 class LiveHtmlListener(sublime_plugin.EventListener):
   def on_close(self, view):
