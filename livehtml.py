@@ -11,8 +11,12 @@ def content(view):
   return view.substr(sublime.Region(0, view.size()))
 
 def is_html_view(view):
-  "Check if given view can be used for live CSS"
+  "Check if given view can be used for live HTML"
   return view.score_selector(0, 'text.html') > 0
+
+def is_css_view(view):
+  "Check if given view can be used for live HTML"
+  return view.score_selector(0, 'source.css') > 0
 
 def toggle_indicator(view, state):
   if state:
@@ -68,7 +72,7 @@ class LiveHtmlListener(sublime_plugin.EventListener):
 class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):  
   def run(self, edit):
     global enabled_views
-    if not is_html_view(self.view):
+    if not is_html_view(self.view) and not is_css_view(self.view):
       return
     try:
       enabled_views.remove(self.view.id())
