@@ -1,5 +1,5 @@
 import sublime, sublime_plugin
-import urllib  
+import urllib.request
 
 # Holds currently loaded views where live HTML is enabled
 enabled_views = []
