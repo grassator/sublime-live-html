@@ -43,20 +43,15 @@ def check_live_html_server():
 
 class LiveHtmlListener(sublime_plugin.EventListener):
   # Holds currently loaded views where live HTML is enabled
-  enabled_views = []
+  enabled_views = set()
   port = 55555
   host = '127.0.0.1'
 
   def on_close(self, view):
-    try:
-      LiveHtmlListener.enabled_views.remove(view.id())
-    except:
-      return
+    LiveHtmlListener.enabled_views.discard(view.id())
 
   def on_modified_async(self, view):
-    try:
-      LiveHtmlListener.enabled_views.index(view.id())
-    except:
+    if view.id() not in LiveHtmlListener.enabled_views:
       return
     if view.file_name():
       result = send_updated_html(view)
@@ -69,13 +64,13 @@ class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     if not is_html_view(self.view) and not is_css_view(self.view):
       return
-    try:
+    if self.view.id() in LiveHtmlListener.enabled_views:
       LiveHtmlListener.enabled_views.remove(self.view.id())
       toggle_indicator(self.view, False)
-    except:
+    else:
       try:
         check_live_html_server()
-        LiveHtmlListener.enabled_views.append(self.view.id())
+        LiveHtmlListener.enabled_views.add(self.view.id())
         send_updated_html(self.view)
         toggle_indicator(self.view, True)
       except:
