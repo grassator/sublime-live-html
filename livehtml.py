@@ -15,7 +15,7 @@ def is_css_view(view):
 
 def toggle_indicator(view, state):
   if state:
-    view.set_status('live-html-active', '~{LH}~')
+    view.set_status('live-html-active', '<LH>')
   else:
     view.erase_status('live-html-active')
 
@@ -41,6 +41,10 @@ def check_live_html_server():
   stream.read()
   stream.close()
 
+def set_offline_status():
+  toggle_indicator(view, False)
+  sublime.status_message('<Live HTML Server Offline>')
+
 class LiveHtmlListener(sublime_plugin.EventListener):
   # Holds currently loaded views where live HTML is enabled
   enabled_views = set()
@@ -56,8 +60,7 @@ class LiveHtmlListener(sublime_plugin.EventListener):
     if view.file_name():
       result = send_updated_html(view)
       if not result:
-        toggle_indicator(view, False)
-        sublime.status_message('~{Live HTML Server Offline}~')
+        set_offline_status()
 
 
 class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):  
@@ -74,5 +77,4 @@ class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):
         send_updated_html(self.view)
         toggle_indicator(self.view, True)
       except:
-        sublime.status_message('~{Live HTML Server Offline}~')
-        return
+        set_offline_status()
