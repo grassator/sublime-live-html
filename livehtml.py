@@ -41,7 +41,7 @@ def check_live_html_server():
   stream.read()
   stream.close()
 
-def set_offline_status():
+def set_offline_status(view):
   toggle_indicator(view, False)
   sublime.status_message('<Live HTML Server Offline>')
 
@@ -60,7 +60,7 @@ class LiveHtmlListener(sublime_plugin.EventListener):
     if view.file_name():
       result = send_updated_html(view)
       if not result:
-        set_offline_status()
+        set_offline_status(view)
 
 
 class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):  
@@ -77,4 +77,4 @@ class ToggleLiveHtmlCommand(sublime_plugin.TextCommand):
         send_updated_html(self.view)
         toggle_indicator(self.view, True)
       except:
-        set_offline_status()
+        set_offline_status(self.view)
