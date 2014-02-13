@@ -23,7 +23,8 @@ def send_updated_html(view):
   try:
     details = urllib.parse.urlencode({
       'file': view.file_name(),
-      'content': content(view)
+      'content': content(view),
+      'version': '0.1'
     })
     details = details.encode('UTF-8')
     url = urllib.request.Request('http://' + LiveHtmlListener.host + ':' + str(LiveHtmlListener.port) + '/changed', details)
